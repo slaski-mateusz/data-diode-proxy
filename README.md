@@ -83,5 +83,7 @@ Script can be executed with option "-c", "--conf" and config file name
 
 ### rx-ver
 
-Program check if each file is consistent.
-Counter values are incremented without gaps.
+Program check if each incoming file:
+
+* has subsequent number
+* is consistent - contains file number and counter values are incremented without gaps.
