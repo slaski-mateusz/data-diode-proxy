@@ -42,3 +42,9 @@ It may be used or adapted for many cases - For example:
 * Logs replication
 * Database (MariaDB) binlog replication
 
+There are four appliactions:
+
+* **tx-agent** - Data Diode Transmission Agent described above.
+* **rx-agent** - Data Diode Receiver Agent described above.
+* **rx-ver** - Application verifying if received files are consistent.
+* **tx-sim** - Application simulating files data source.
