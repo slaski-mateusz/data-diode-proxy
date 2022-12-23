@@ -40,8 +40,8 @@ def main():
     out_path = conf_data["out-file"]["path"]
     out_name = conf_data["out-file"]["name"]
     out_ext = conf_data["out-file"]["ext"]
-    out_min_lines = conf_data["out-file"]["min-size-mb"] * 1024 * 32
-    out_max_lines = conf_data["out-file"]["max-size-mb"] * 1024 * 32
+    out_min_lines = conf_data["out-file"]["min-size-kb"] * 32
+    out_max_lines = conf_data["out-file"]["max-size-kb"] * 32
     file_count = 0
     while True:
         out_filename = out_name + str(file_count).zfill(8) + "." + out_ext

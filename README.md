@@ -70,8 +70,8 @@ out-file:
   path: ../tx-workdir
   name: sim
   ext: dat
-  min-size-mb: 1
-  max-size-mb: 2
+  min-size-kb: 1
+  max-size-kb: 2
 cycle:
   seconds: 5
   random-sec-offset: 2
