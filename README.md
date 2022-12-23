@@ -49,3 +49,5 @@ There are four applications:
 * **rx-agent** - Data Diode Receiver Agent described above.
 * **rx-ver** - Application verifying if received files are consistent.
 
+Simulation and verification are supporting / test purpose tools so they are Python applications.
+TX and RX Agent need have good performance so they are Golang applications.
