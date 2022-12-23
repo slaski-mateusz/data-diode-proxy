@@ -1,0 +1,9 @@
+out-file:
+  path: ../rx-workdir
+  name: sim
+  ext: dat
+  min-size-mb: "1"
+  max-size-mb: 2
+cycle:
+  seconds: five             # Base cycle to generate new files
+  random-sec-offset: 2      # Randomization offset added to each cycle

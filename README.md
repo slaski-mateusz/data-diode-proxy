@@ -54,3 +54,34 @@ There are four applications:
 
 Simulation and verification are supporting / test purpose tools so they are Python applications.
 TX and RX Agent need have good performance so they are Golang applications.
+
+### tx-sim
+
+Program writes files named according the configuration filled with 32 characters lines:
+
+* 8 characters with zero filled file number
+* 23 characters with zero filled counter in file
+* 1 newline
+
+**Default configuration:**
+
+```yaml:no-line-numbers
+out-file:
+  path: ../tx-workdir
+  name: sim
+  ext: dat
+  min-size-mb: 1
+  max-size-mb: 2
+cycle:
+  seconds: 5
+  random-sec-offset: 2
+```
+
+Is placed in YAML file with the same name as script.
+
+Script can be executed with option "-c", "--conf" and config file name
+
+### rx-ver
+
+Program check if each file is consistent.
+Counter values are incremented without gaps.
