@@ -42,7 +42,7 @@ It may be used or adapted for many cases - For example:
 * Logs replication
 * Database (MariaDB) binlog replication
 
-There are four appliactions:
+There are four applications:
 
 * **tx-agent** - Data Diode Transmission Agent described above.
 * **rx-agent** - Data Diode Receiver Agent described above.
