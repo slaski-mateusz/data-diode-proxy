@@ -1,4 +1,7 @@
-# Data Diode Proxy - Implementation in Golang
+# Data Diode Proxy
+
+Core components - Implementation in Golang
+Supporting tools - Implementation in Python
 
 ## Introduction
 
