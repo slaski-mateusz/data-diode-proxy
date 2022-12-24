@@ -5,7 +5,7 @@ Supporting tools - Implementation in Python
 
 ## Introduction
 
-[Data Diode or Unidirectional Network](https://en.wikipedia.org/wiki/Unidirectional_network) device (called later DD) is most secure network connection.
+[Data Diode or Unidirectional Network](https://en.wikipedia.org/wiki/Unidirectional_network) device (called later DD / Data Diode) is most secure network connection.
 
 The disadvantages are:
 
@@ -17,24 +17,11 @@ The disadvantages are:
 
 Such device requires dedicated proxy software to transmit data.
 
-Software must consist of two programs:
+Core of software would be two applications:
 
 * Transmission Agent - TX
-  This program has to:
-  * Read source data.
-  * Split it into packages fit to DD allowed package size.
-  * Put it into sending buffer with configured TTL (time to live) and with unique ascending ids.
-  * Send it cyclically until TTL is reached.
-  * Remove outdated package from buffer
-  * Have option to resend outdated packages for selected time on demand - See RX functionallity.
 * Receiver Agent - RX
-  This program has to:
-  * Receive packages
-  * If has no such package in receive buffer - Put in receive buffer.
-  * If package is already in receive buffer - Drop it.
-  * Monitor if for configured TTL data in receive buffer is consistent - no gaps in id numbers.
-    * In case of inconsistency indicate it (logs / ui / sending some message)
-    * Indication has to contains data when inconsistencies appeared.
+
 
 ## Implementation
 
@@ -45,10 +32,11 @@ It may be used or adapted for many cases - For example:
 * Logs replication
 * Database (MariaDB) binlog replication
 
-There are four applications:
+To solve five applications are needed:
 
 * **tx-sim** - Application simulating files data source.
 * **tx-agent** - Data Diode Transmission Agent described above.
+* **dd-proxy** - Simple proxy simulating data diode.
 * **rx-agent** - Data Diode Receiver Agent described above.
 * **rx-ver** - Application verifying if received files are consistent.
 
@@ -56,6 +44,8 @@ Simulation and verification are supporting / test purpose tools so they are Pyth
 TX and RX Agent need have good performance so they are Golang applications.
 
 ### tx-sim
+
+Application simulates incoming data stored in files.
 
 Program writes files named according the configuration filled with 32 characters lines:
 
@@ -79,7 +69,48 @@ cycle:
 
 Is placed in YAML file with the same name as script.
 
-Script can be executed with option "-c", "--conf" and config file name
+Script can be executed with option "-c", "--conf" and config file name.
+
+To be able to test **rx-ver** application simulator needs to generate dome errors.
+
+It would be activated with options:
+
+* **"-f --file_skip"**
+  With value 0-100. Sometimes some file number would be skipped. Number set percentage possibility to skip file number.
+* **"-n --number_skip"**
+  With value 0-100. Sometimes line in file would be skipped. Number set percentage possibility to skip line.
+
+### tx-agent
+
+This program has to:
+
+* Read source data.
+* Split it into packages fit to DD allowed package size.
+* Put it into sending buffer with configured TTL (time to live) and with unique ascending ids.
+* Send it cyclically until TTL is reached.
+* Remove outdated package from buffer
+* Have option to resend outdated packages for selected time on demand - See RX functionallity.
+
+### dd-proxy
+
+ApplicationListening on one interface. Sending packages on other.
+
+The only more sophisticated function is possibility to add some errors:
+
+* Loose some amount of randomly selected packages
+  Option **"-p --packets_drops"**. With value 0-100. Number set percentage possibility to drop package.
+* Schedule period of inactivity to simulate device failure).
+
+### rx-agent
+
+This program has to:
+
+* Receive packages
+* If has no such package in receive buffer - Put in receive buffer.
+* If package is already in receive buffer - Drop it.
+* Monitor if for configured TTL data in receive buffer is consistent - no gaps in id numbers.
+  * In case of inconsistency indicate it (logs / ui / sending some message)
+  * Indication has to contains data when inconsistencies appeared.
 
 ### rx-ver
 
