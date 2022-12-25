@@ -5,8 +5,7 @@ out-file:
   min-size-kb: 10
   max-size-kb: 20
 cycle:
-  seconds: 1
-  random-sec-offset: 1
-errors:
-  skip-file-chance: 50
-  skip-line-chance: 50
+  seconds: 5
+  random-sec-offset: 2
+
+  

@@ -53,6 +53,8 @@ Program writes files named according the configuration filled with 32 characters
 * 23 characters with zero filled counter in file
 * 1 newline
 
+Script can be executed with option "-c", "--conf" and config file name.
+
 **Default configuration:**
 
 ```yaml:no-line-numbers
@@ -65,20 +67,21 @@ out-file:
 cycle:
   seconds: 5
   random-sec-offset: 2
+errors:
+  skip-file-chance: 0
+  skip-line-chance: 0
 ```
 
 Is placed in YAML file with the same name as script.
 
-Script can be executed with option "-c", "--conf" and config file name.
-
 To be able to test **rx-ver** application simulator needs to generate dome errors.
 
-It would be activated with options:
+It would be activated with options dictionary **errors** from config file. This section is optional. Without it chances are set to zero - No errors generated.
 
-* **"-f --file_skip"**
+<!-- * **"-f --skip_file"**
   With value 0-100. Sometimes some file number would be skipped. Number set percentage possibility to skip file number.
-* **"-n --number_skip"**
-  With value 0-100. Sometimes line in file would be skipped. Number set percentage possibility to skip line.
+* **"-l --skip_line"**
+  With value 0-100. Sometimes line in file would be skipped. Number set percentage possibility to skip line. -->
 
 ### tx-agent
 
