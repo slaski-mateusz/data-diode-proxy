@@ -6,6 +6,7 @@ from time import sleep, time
 from random import randint
 from os import path
 
+
 conf_schema = Schema({
     "out-file": {
         "path": str,
@@ -23,6 +24,7 @@ conf_schema = Schema({
         "skip-line-chance": int
     }
 })
+
 
 def to_skip(chance):
     probe = randint(0, 100)
@@ -54,9 +56,6 @@ def main():
     out_ext = conf_data["out-file"]["ext"]
     out_min_lines = conf_data["out-file"]["min-size-kb"] * 32
     out_max_lines = conf_data["out-file"]["max-size-kb"] * 32
-    
-    print(skip_file_chance, skip_file_chance)
-
     if "errors" in conf_data.keys():
         skip_file_chance = conf_data["errors"]["skip-file-chance"]
         skip_line_chance = conf_data["errors"]["skip-line-chance"]
@@ -93,7 +92,6 @@ def main():
             conf_data["cycle"]["random-sec-offset"]
             )
         sleep(conf_data["cycle"]["seconds"] + rand_sleep_offs)
-        
 
 
 if __name__ == "__main__":
