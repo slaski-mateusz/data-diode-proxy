@@ -45,6 +45,8 @@ TX and RX Agent need have good performance so they are Golang applications.
 
 ### tx-sim
 
+Developed in Python.
+
 Application simulates incoming data stored in files.
 
 Program writes files named according the configuration filled with 32 characters lines:
@@ -85,6 +87,8 @@ It would be activated with options dictionary **errors** from config file. This 
 
 ### tx-agent
 
+Developed in Go
+
 This program has to:
 
 * Read source data.
@@ -96,6 +100,8 @@ This program has to:
 
 ### dd-proxy
 
+Developed in Go
+
 ApplicationListening on one interface. Sending packages on other.
 
 The only more sophisticated function is possibility to add some errors:
@@ -105,6 +111,8 @@ The only more sophisticated function is possibility to add some errors:
 * Schedule period of inactivity to simulate device failure).
 
 ### rx-agent
+
+Developed in Go
 
 This program has to:
 
@@ -116,6 +124,8 @@ This program has to:
   * Indication has to contains data when inconsistencies appeared.
 
 ### rx-ver
+
+Developed in Python
 
 Program check if each incoming file:
 
