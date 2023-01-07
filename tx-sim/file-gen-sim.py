@@ -6,6 +6,8 @@ from time import sleep, time
 from random import randint
 from os import path
 
+FLEN = 8
+NUMLEN = 23
 
 conf_schema = Schema({
     "out-file": {
@@ -61,7 +63,7 @@ def main():
         skip_line_chance = conf_data["errors"]["skip-line-chance"]
     file_count = 0
     while True:
-        out_filename = out_name + str(file_count).zfill(8) + "." + out_ext
+        out_filename = out_name + str(file_count).zfill(FLEN) + "." + out_ext
         if to_skip(skip_file_chance):
             print("File %s skipped" % out_filename)
         else:
@@ -81,7 +83,7 @@ def main():
                         pass
                     else:
                         out_file.write(
-                            str(file_count).zfill(8) + str(line_count).zfill(23) + "\n"
+                            str(file_count).zfill(FLEN) + str(line_count).zfill(NUMLEN) + "\n"
                             )
                         written_line_count += 1
                     line_count += 1
