@@ -49,7 +49,7 @@ Developed in Python.
 
 Application simulates incoming data stored in files.
 
-Program writes files named according the configuration filled with 32 characters lines:
+Program writes files named according the configuration. Files are filled with 32 characters lines:
 
 * 8 characters with zero filled file number
 * 23 characters with zero filled counter in file
@@ -80,10 +80,10 @@ To be able to test **rx-ver** application simulator needs to generate dome error
 
 It would be activated with options dictionary **errors** from config file. This section is optional. Without it chances are set to zero - No errors generated.
 
-<!-- * **"-f --skip_file"**
-  With value 0-100. Sometimes some file number would be skipped. Number set percentage possibility to skip file number.
-* **"-l --skip_line"**
-  With value 0-100. Sometimes line in file would be skipped. Number set percentage possibility to skip line. -->
+* **"skip-file-chance"**
+  With value 0-100. Sometimes some file number would be skipped with propability given by this value.
+* **"skip-line-chance"**
+  With value 0-100. Sometimes line in file would be skipped with propability given by number.
 
 ### tx-agent
 
@@ -92,7 +92,7 @@ Developed in Go
 This program has to:
 
 * Read source data.
-* Split it into packages fit to DD allowed package size.
+* Split it into packages fit to Data Diode allowed package size.
 * Put it into sending buffer with configured TTL (time to live) and with unique ascending ids.
 * Send it cyclically until TTL is reached.
 * Remove outdated package from buffer
@@ -108,7 +108,7 @@ The only more sophisticated function is possibility to add some errors:
 
 * Loose some amount of randomly selected packages
   Option **"-p --packets_drops"**. With value 0-100. Number set percentage possibility to drop package.
-* Schedule period of inactivity to simulate device failure).
+* Eventually schedule period of inactivity to simulate device failure).
 
 ### rx-agent
 
@@ -121,7 +121,9 @@ This program has to:
 * If package is already in receive buffer - Drop it.
 * Monitor if for configured TTL data in receive buffer is consistent - no gaps in id numbers.
   * In case of inconsistency indicate it (logs / ui / sending some message)
-  * Indication has to contains data when inconsistencies appeared.
+    * If TTL for package is actual than only show some statistics
+    * If TTL for package is outdated strongly indicate and notify that data has to be restored manually.  
+  * Indication has to contains information when inconsistencies appeared.
 
 ### rx-ver
 
