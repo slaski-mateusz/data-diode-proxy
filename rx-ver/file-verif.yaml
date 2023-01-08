@@ -1,0 +1,6 @@
+in-file:
+  path: ../tx-workdir
+  name: sim
+  ext: dat
+cycle:
+  seconds: 5

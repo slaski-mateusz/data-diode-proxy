@@ -2,11 +2,11 @@ out-file:
   path: ../tx-workdir
   name: sim
   ext: dat
-  min-size-kb: 10
-  max-size-kb: 20
+  min-size-kb: 1
+  max-size-kb: 2
 cycle:
   seconds: 1
   random-sec-offset: 1
 errors:
-  skip-file-chance: 50
-  skip-line-chance: 50
+  skip-file-chance: 0
+  skip-line-chance: 0

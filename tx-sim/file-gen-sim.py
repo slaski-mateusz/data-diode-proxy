@@ -1,6 +1,6 @@
 from sys import argv
 from argparse import ArgumentParser
-import yaml
+from yaml import safe_load, YAMLError
 from schema import Schema, SchemaError, Optional
 from time import sleep, time
 from random import randint
@@ -9,7 +9,7 @@ from os import path
 FLEN = 8
 NUMLEN = 23
 
-conf_schema = Schema({
+CONF_SCHEMA = Schema({
     "out-file": {
         "path": str,
         "name": str,
@@ -46,11 +46,11 @@ def main():
     skip_line_chance = 0
     with open(conf_file_name, "r") as conf_file:
         try:
-            conf_data = yaml.safe_load(conf_file)
-        except yaml.YAMLError as yaml_exception:
+            conf_data = safe_load(conf_file)
+        except YAMLError as yaml_exception:
             raise yaml_exception
     try:
-        conf_schema.validate(conf_data)
+        CONF_SCHEMA.validate(conf_data)
     except SchemaError as schema_exception:
         raise schema_exception
     out_path = conf_data["out-file"]["path"]
@@ -65,7 +65,7 @@ def main():
     while True:
         out_filename = out_name + str(file_count).zfill(FLEN) + "." + out_ext
         if to_skip(skip_file_chance):
-            print("File %s skipped" % out_filename)
+            print("File {} skipped".format(out_filename))
         else:
             out_filepath = path.join(
                 out_path,
@@ -87,7 +87,7 @@ def main():
                             )
                         written_line_count += 1
                     line_count += 1
-            print("file %s written" % out_filename)
+            print("file {} written".format(out_filename))
         file_count += 1
         rand_sleep_offs = randint(
             0,
