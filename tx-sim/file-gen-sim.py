@@ -5,6 +5,7 @@ from schema import Schema, SchemaError, Optional
 from time import sleep, time
 from random import randint
 from os import path
+from os import scandir as sd
 
 FLEN = 8
 NUMLEN = 23
@@ -62,6 +63,16 @@ def main():
         skip_file_chance = conf_data["errors"]["skip-file-chance"]
         skip_line_chance = conf_data["errors"]["skip-line-chance"]
     file_count = 0
+    existing_files = sd(out_path)
+    for file_to_check in existing_files:
+        filename = file_to_check.name.split(".")[0]
+        filenumtxt = filename.removeprefix(conf_data["out-file"]["name"])
+        try:
+            filenum = int(filenumtxt)
+            if filenum > file_count:
+                file_count = filenum + 1
+        except:
+            continue
     while True:
         out_filename = out_name + str(file_count).zfill(FLEN) + "." + out_ext
         if to_skip(skip_file_chance):
