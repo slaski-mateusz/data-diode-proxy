@@ -32,6 +32,16 @@ def main():
     except SchemaError as schema_exception:
         raise schema_exception
     prev_file_num = 0
+    existing_files = sd(conf_data["in-file"]["path"])
+    for file_to_check in existing_files:
+        filename = file_to_check.name.split(".")[0]
+        filenumtxt = filename.removeprefix(conf_data["in-file"]["name"])
+        try:
+            filenum = int(filenumtxt)
+            if filenum > prev_file_num:
+                prev_file_num = filenum + 1
+        except ValueError:
+            continue
     while True:
         with sd(conf_data["in-file"]["path"]) as in_files:
             for file_to_check in in_files:
@@ -50,7 +60,7 @@ def main():
                             conf_data["in-file"]["name"])
                         try:
                             filenum = int(filenumtxt)
-                            if filenum != prev_file_num + 1:
+                            if filenum > prev_file_num + 1:
                                 print(
                                     "Gap between files {} and {}".format(
                                         prev_file_num,
