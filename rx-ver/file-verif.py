@@ -1,5 +1,5 @@
 from sys import argv
-from os import scandir
+from os import scandir as sd
 from os.path import join as join_path
 from yaml import safe_load, YAMLError
 from schema import Schema, SchemaError
@@ -10,7 +10,9 @@ NUMLEN = 23
 
 CONF_SCHEMA = Schema({
     "in-file": {
-        "path": str
+        "path": str,
+        "name": str,
+        "ext": str
     },
     "cycle": {
         "seconds": int
@@ -30,7 +32,7 @@ def main():
     except SchemaError as schema_exception:
         raise schema_exception
     while True:
-        with scandir(conf_data["in-file"]["path"]) as in_files:
+        with sd(conf_data["in-file"]["path"]) as in_files:
             for file_to_check in in_files:
                 if file_to_check.is_file():
                     file_mtime = file_to_check.stat().st_mtime
@@ -43,9 +45,10 @@ def main():
                         with open(file_to_check_path) as file_to_read:
                             file_lines = file_to_read.readlines()
                         filename = file_to_check.name.split(".")[0]
+                        filenumtxt = filename.removeprefix(conf_data["in-file"]["name"])
                         for idx, line in enumerate(file_lines):
                             fpart = line[0:8]
-                            if fpart != filename:
+                            if fpart != filenumtxt:
                                 print(
                                     "File {} line number contains value {} instead of {}".format(
                                         idx,
@@ -63,15 +66,16 @@ def main():
                                         npart
                                     )
                                 )
-                            if idx < len(file_lines):
-                                next_npart = file_lines[idx + 1][0:8]
+                            if idx + 1 < len(file_lines):
+                                next_npart = file_lines[idx + 1][8:]
                                 try:
                                     num_in_next_line = int(next_npart)
                                 except ValueError:
                                     continue
                                 if num_in_next_line != num_in_line + 1:
                                     print(
-                                        "Numbers in lines {} and {} are not ascending by 1. They are {} and {}".format(
+                                        "In file '{}' numbers in lines {} and {} are not ascending by 1. They are {} and {}".format(
+                                            filename,
                                             idx,
                                             idx+1,
                                             num_in_line,
