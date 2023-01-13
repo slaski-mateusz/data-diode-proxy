@@ -71,7 +71,7 @@ def main():
             filenum = int(filenumtxt)
             if filenum > file_count:
                 file_count = filenum + 1
-        except:
+        except ValueError:
             continue
     while True:
         out_filename = out_name + str(file_count).zfill(FLEN) + "." + out_ext

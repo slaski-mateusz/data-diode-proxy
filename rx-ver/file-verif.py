@@ -31,6 +31,7 @@ def main():
         CONF_SCHEMA.validate(conf_data)
     except SchemaError as schema_exception:
         raise schema_exception
+    prev_file_num = 0
     while True:
         with sd(conf_data["in-file"]["path"]) as in_files:
             for file_to_check in in_files:
@@ -45,7 +46,20 @@ def main():
                         with open(file_to_check_path) as file_to_read:
                             file_lines = file_to_read.readlines()
                         filename = file_to_check.name.split(".")[0]
-                        filenumtxt = filename.removeprefix(conf_data["in-file"]["name"])
+                        filenumtxt = filename.removeprefix(
+                            conf_data["in-file"]["name"])
+                        try:
+                            filenum = int(filenumtxt)
+                            if filenum != prev_file_num + 1:
+                                print(
+                                    "Gap between files {} and {}".format(
+                                        prev_file_num,
+                                        filenum
+                                    )
+                                )
+                            prev_file_num = filenum
+                        except ValueError:
+                            continue
                         for idx, line in enumerate(file_lines):
                             fpart = line[0:8]
                             if fpart != filenumtxt:
