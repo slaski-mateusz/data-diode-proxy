@@ -12,7 +12,7 @@ The disadvantages are:
 * Package receive can't be confirmed so only UDP may be used.
 * For the same reason transmitter can't resend data when some package is lost.
   * It is easy to get inconsistent data.
-  * Solution is redundancy - Sending the same data cyclically multiple times.
+  * Solution is transfer volume redundancy - Sending the same data cyclically multiple times.
 * Data-diode devices has often limited package size. It may be configurable.
 
 Such device requires dedicated proxy software to transmit data.
@@ -21,7 +21,6 @@ Core of software would be two applications:
 
 * Transmission Agent - TX
 * Receiver Agent - RX
-
 
 ## Implementation
 

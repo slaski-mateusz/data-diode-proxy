@@ -1,5 +1,0 @@
-package rxagent
-
-func main() {
-
-}

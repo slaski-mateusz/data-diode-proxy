@@ -1,5 +1,5 @@
 out-file:
-  path: ../rx-workdir
+  path: ../../workdirs/rx
   name: sim
   ext: dat
   min-size-mb: "1"

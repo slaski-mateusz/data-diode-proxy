@@ -1,5 +1,5 @@
 in-file:
-  path: ../tx-workdir
+  path: ../../workdirs/tx
   name: sim
   ext: dat
 cycle:
