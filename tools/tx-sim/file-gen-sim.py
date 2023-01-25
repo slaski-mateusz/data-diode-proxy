@@ -6,6 +6,7 @@ from time import sleep, time
 from random import randint
 from os import path
 from os import scandir as sd
+from termcolor import colored
 
 FLEN = 8
 NUMLEN = 23
@@ -76,16 +77,21 @@ def main():
     while True:
         out_filename = out_name + str(file_count).zfill(FLEN) + "." + out_ext
         if to_skip(skip_file_chance):
-            print("File {} skipped".format(out_filename))
+            print(
+                colored(
+                    "File {} skipped".format(out_filename),
+                    "yellow"
+                )
+            )
         else:
             out_filepath = path.join(
                 out_path,
                 out_filename
-                )
+            )
             out_lines = randint(
                 out_min_lines,
                 out_max_lines
-                )
+            )
             with open(out_filepath, "w") as out_file:
                 line_count = 0
                 written_line_count = 0
@@ -94,16 +100,22 @@ def main():
                         pass
                     else:
                         out_file.write(
-                            str(file_count).zfill(FLEN) + str(line_count).zfill(NUMLEN) + "\n"
-                            )
+                            str(file_count).zfill(FLEN) +
+                            str(line_count).zfill(NUMLEN) + "\n"
+                        )
                         written_line_count += 1
                     line_count += 1
-            print("file {} written".format(out_filename))
+            print(
+                colored(
+                    "file {} written".format(out_filename),
+                    "green"
+                )
+            )
         file_count += 1
         rand_sleep_offs = randint(
             0,
             conf_data["cycle"]["random-sec-offset"]
-            )
+        )
         sleep(conf_data["cycle"]["seconds"] + rand_sleep_offs)
 
 

@@ -74,7 +74,7 @@ func main() {
 			if f.Mode().IsRegular() {
 				if matchPattern {
 					if f.ModTime().After(timeToCheck) {
-						fmt.Print(f.Name(), f.ModTime(), " ")
+						fmt.Println(f.Name(), f.ModTime(), " ")
 					}
 				}
 			}
