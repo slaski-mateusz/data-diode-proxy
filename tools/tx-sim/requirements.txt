@@ -3,3 +3,4 @@ contextlib2==21.6.0
 pycodestyle==2.10.0
 PyYAML==6.0
 schema==0.7.5
+termcolor==2.2.0
