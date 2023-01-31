@@ -6,3 +6,5 @@ ttl:
   seconds: 0
   minutes: 10
   hours: 0
+packet_size:
+  bytes: 64
