@@ -1,7 +1,7 @@
 workdir: "../../workdirs/tx"
 fpattern: "sim[0-9]{8}\\.dat"
 cycle:
-  seconds: 6
+  milisec: 100
 ttl:
   seconds: 0
   minutes: 10

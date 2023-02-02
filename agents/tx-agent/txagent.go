@@ -20,6 +20,7 @@ import (
 // few global variables
 
 var (
+	doneDir       = "done"
 	configuration configDef
 	pkgTtl        int64
 	cycleDuration time.Duration
@@ -34,7 +35,7 @@ type ttlDef struct {
 }
 
 type cycleDef struct {
-	Seconds int64 `yaml:"seconds"`
+	MiliSec int64 `yaml:"milisec"`
 }
 
 type packetSizeDef struct {
@@ -65,7 +66,7 @@ type bufferDef struct {
 // Functions
 
 func createDoneDirectory() {
-	doneDirPath := path.Join(configuration.Workdir, "done")
+	doneDirPath := path.Join(configuration.Workdir, doneDir)
 	if _, errSt := os.Stat(doneDirPath); errors.Is(errSt, os.ErrNotExist) {
 		errMk := os.Mkdir(doneDirPath, os.ModePerm)
 		if errMk != nil {
@@ -139,10 +140,6 @@ func checkForNewFilesToTransmit(buffer *bufferDef) {
 				errRd,
 			)
 		}
-		var timeToCheck time.Time
-		timeToCheck = time.Now().Add(-cycleDuration)
-		fmt.Println(time.Now())
-		fmt.Println(timeToCheck)
 		for _, f := range files {
 			fileMatchPattern, _ := regexp.MatchString(configuration.FilePattern, f.Name())
 			if !fileMatchPattern {
@@ -152,23 +149,38 @@ func checkForNewFilesToTransmit(buffer *bufferDef) {
 			if !fileIsRegular {
 				continue
 			}
-			fileIsRecentlyModified := f.ModTime().After(timeToCheck)
-			if !fileIsRecentlyModified {
-				continue
-			}
-			fmt.Println(f.Name(), f.ModTime(), " ")
-			filePath := filepath.Join(configuration.Workdir, f.Name())
+			filePath := filepath.Join(
+				configuration.Workdir,
+				f.Name(),
+			)
+			doneFilePath := filepath.Join(
+				configuration.Workdir,
+				doneDir,
+				f.Name(),
+			)
 			fileToRead, errOpen := os.Open(filePath)
 			if errOpen != nil {
-				fmt.Printf("can not read file %v %v\n", f.Name(), errOpen)
+				fmt.Printf("Can not read file %v %v\n", f.Name(), errOpen)
 			} else {
 				putFileContentToBuffer(f.Name(), fileToRead, buffer)
+				errRen := os.Rename(filePath, doneFilePath)
+				if errRen != nil {
+					log.Fatalf(
+						"Can not move file from '%v' to '%v'\n",
+						filePath,
+						doneFilePath,
+					)
+				}
 			}
 
 		}
 		fmt.Println()
 		time.Sleep(cycleDuration)
 	}
+}
+
+func transmitBufferData() {
+
 }
 
 // main
@@ -185,7 +197,7 @@ func main() {
 	createDoneDirectory()
 	pkgTtl = configuration.Ttl.Seconds + 60*configuration.Ttl.Minutes + 3600*configuration.Ttl.Hours
 	cycleDuration = time.Duration(
-		configuration.Cycle.Seconds * int64(time.Second),
+		configuration.Cycle.MiliSec * int64(time.Second),
 	)
 	var buffer bufferDef
 	// TODO: Load buffer from file
