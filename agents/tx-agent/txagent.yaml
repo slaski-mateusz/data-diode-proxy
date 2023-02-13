@@ -1,5 +1,7 @@
-workdir: "../../workdirs/tx"
-fpattern: "sim[0-9]{8}\\.dat"
+files:
+  workdir: "../../workdirs/tx"
+  fpattern: "sim[0-9]{8}\\.dat"
+  process_after_sec: 10
 cycle:
   milisec: 100
 ttl:

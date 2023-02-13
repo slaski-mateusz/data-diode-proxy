@@ -100,6 +100,23 @@ This program has to:
 * Have option to resend outdated packages for selected time on demand - See RX functionallity.
 * Move file already saved to buffer to subdirectory "done"
 
+Agent configuration file
+```yaml:no-line-numbers
+files:
+  workdir: "../../workdirs/tx"
+  fpattern: "sim[0-9]{8}\\.dat"
+  process_after_sec: 10
+cycle:
+  milisec: 100
+ttl:
+  seconds: 0
+  minutes: 10
+  hours: 0
+packet_size:
+  bytes: 64
+```
+
+
 ### dd-proxy
 
 Developed in Go

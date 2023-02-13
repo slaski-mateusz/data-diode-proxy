@@ -28,6 +28,12 @@ var (
 
 // Configuration file types
 
+type filesDef struct {
+	WorkDir         string `yaml:"workdir"`
+	Pattern         string `yaml:"fpattern"`
+	ProcessAfterSec int    `yaml:"process_after_sec"`
+}
+
 type ttlDef struct {
 	Seconds int64 `yaml:"seconds"`
 	Minutes int64 `yaml:"minutes"`
@@ -43,11 +49,10 @@ type packetSizeDef struct {
 }
 
 type configDef struct {
-	Workdir     string        `yaml:"workdir"`
-	FilePattern string        `yaml:"fpattern"`
-	Cycle       cycleDef      `yaml:"cycle"`
-	Ttl         ttlDef        `yaml:"ttl"`
-	PacketSize  packetSizeDef `yaml:"packet_size"`
+	Files      filesDef      `yaml:"files"`
+	Cycle      cycleDef      `yaml:"cycle"`
+	Ttl        ttlDef        `yaml:"ttl"`
+	PacketSize packetSizeDef `yaml:"packet_size"`
 }
 
 // Buffer types
@@ -66,13 +71,13 @@ type bufferDef struct {
 // Functions
 
 func createDoneDirectory() {
-	doneDirPath := path.Join(configuration.Workdir, doneDir)
+	doneDirPath := path.Join(configuration.Files.WorkDir, doneDir)
 	if _, errSt := os.Stat(doneDirPath); errors.Is(errSt, os.ErrNotExist) {
 		errMk := os.Mkdir(doneDirPath, os.ModePerm)
 		if errMk != nil {
 			log.Fatalf(
 				"Can not create 'done' directory in working directory %v due to problem: %v",
-				configuration.Workdir,
+				configuration.Files.WorkDir,
 				errMk,
 			)
 		}
@@ -132,16 +137,16 @@ func removeOutdatedPackagesFromBuffer(buffer *bufferDef) {
 
 func checkForNewFilesToTransmit(buffer *bufferDef) {
 	for {
-		files, errRd := ioutil.ReadDir(configuration.Workdir)
+		files, errRd := ioutil.ReadDir(configuration.Files.WorkDir)
 		if errRd != nil {
 			log.Fatalf(
 				"Can not list working directory '%s'. Error: %v",
-				configuration.Workdir,
+				configuration.Files.WorkDir,
 				errRd,
 			)
 		}
 		for _, f := range files {
-			fileMatchPattern, _ := regexp.MatchString(configuration.FilePattern, f.Name())
+			fileMatchPattern, _ := regexp.MatchString(configuration.Files.Pattern, f.Name())
 			if !fileMatchPattern {
 				continue
 			}
@@ -150,11 +155,11 @@ func checkForNewFilesToTransmit(buffer *bufferDef) {
 				continue
 			}
 			filePath := filepath.Join(
-				configuration.Workdir,
+				configuration.Files.WorkDir,
 				f.Name(),
 			)
 			doneFilePath := filepath.Join(
-				configuration.Workdir,
+				configuration.Files.WorkDir,
 				doneDir,
 				f.Name(),
 			)
