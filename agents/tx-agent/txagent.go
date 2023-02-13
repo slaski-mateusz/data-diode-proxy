@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"path"
@@ -14,6 +15,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gorilla/mux"
 	"gopkg.in/yaml.v3"
 )
 
@@ -188,6 +190,21 @@ func transmitBufferData() {
 
 }
 
+func renderBuffer(resWri http.ResponseWriter) {
+
+}
+
+func rencerConfig(resWri http.ResponseWriter) {
+
+}
+
+func serveBufferContent() {
+	var router = mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("buffer", renderBuffer)
+	router.HandleFunc("config", renderConfig)
+	http.ListenAndServe("127.0.0.1:8686", router)
+}
+
 // main
 
 func main() {
@@ -207,6 +224,7 @@ func main() {
 	var buffer bufferDef
 	// TODO: Load buffer from file
 	go checkForNewFilesToTransmit(&buffer)
+
 	sig := <-cancelChan
 	log.Printf("Caught signal %v", sig)
 	// TODO: Save buffer to file
