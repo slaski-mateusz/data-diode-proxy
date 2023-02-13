@@ -90,12 +90,15 @@ Developed in Go
 
 This program has to:
 
-* Read source data.
+* Monitor directory defined in configuration
+* Detect new files but not modified for defined time
+* Read source file data.
 * Split it into packages fit to Data Diode allowed package size.
 * Put it into sending buffer with configured TTL (time to live) and with unique ascending ids.
 * Send it cyclically until TTL is reached.
 * Remove outdated package from buffer
 * Have option to resend outdated packages for selected time on demand - See RX functionallity.
+* Move file already saved to buffer to subdirectory "done"
 
 ### dd-proxy
 
