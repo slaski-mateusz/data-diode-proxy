@@ -11,6 +11,7 @@ func renderIndex(resWri http.ResponseWriter, requ *http.Request) {
 }
 
 func renderBuffer(resWri http.ResponseWriter, requ *http.Request) {
+
 	buffer.Lock()
 	defer buffer.Unlock()
 	buffBytes, marErr := yaml.Marshal(buffer.content)

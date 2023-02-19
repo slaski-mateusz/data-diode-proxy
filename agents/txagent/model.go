@@ -41,9 +41,9 @@ type packageId int64
 
 type transmittedFileName string
 
-type packages []byte
+type packageData []byte
 
-type packagesById map[packageId]packages
+type packagesById map[packageId]packageData
 
 type packagesByFile map[transmittedFileName]packagesById
 
@@ -53,3 +53,15 @@ type bufferDef struct {
 	sync.Mutex
 	content packagesByValidTill
 }
+
+//transmit types
+
+type packageToTransmit struct {
+	FileName       transmittedFileName
+	Id             packageId
+	ValidTill      validTill
+	PackagesNumber int64
+	Data           packageData
+}
+
+// TODO: follow https://stackoverflow.com/questions/50698689/managing-slices-with-mutex-for-performance-in-golang

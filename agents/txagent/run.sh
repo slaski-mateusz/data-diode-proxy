@@ -1,1 +1,1 @@
-go build -o txagent && ./txagent
+go build -o tx-agent && ./tx-agent

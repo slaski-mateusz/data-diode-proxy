@@ -99,5 +99,9 @@ func checkForNewFilesToTransmit() {
 }
 
 func transmitBufferData() {
-
+	for {
+		// https://www.golinuxcloud.com/golang-udp-server-client/
+		// https://holwech.github.io/blog/Creating-a-simple-UDP-module/
+		time.Sleep(cycleDuration)
+	}
 }
