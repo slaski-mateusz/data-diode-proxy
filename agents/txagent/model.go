@@ -1,15 +1,11 @@
 package main
 
-import (
-	"sync"
-)
-
 // Configuration file types
 
 type filesDef struct {
 	WorkDir         string `yaml:"workdir"`
 	Pattern         string `yaml:"fpattern"`
-	ProcessAfterSec int    `yaml:"process_after_sec"`
+	ProcessAfterSec int64  `yaml:"process_after_sec"`
 }
 
 type ttlDef struct {
@@ -45,23 +41,19 @@ type packageData []byte
 
 type packagesById map[packageId]packageData
 
-type packagesByFile map[transmittedFileName]packagesById
-
-type packagesByValidTill map[validTill]packagesByFile
-
-type bufferDef struct {
-	sync.Mutex
-	content packagesByValidTill
+type dataToTransmit struct {
+	Vt             validTill
+	Tfn            transmittedFileName
+	PackagesNumber packageId
+	Packages       packagesById
 }
 
 //transmit types
 
-type packageToTransmit struct {
-	FileName       transmittedFileName
-	Id             packageId
-	ValidTill      validTill
-	PackagesNumber int64
-	Data           packageData
-}
-
-// TODO: follow https://stackoverflow.com/questions/50698689/managing-slices-with-mutex-for-performance-in-golang
+// type packageToTransmit struct {
+// 	FileName       transmittedFileName
+// 	Id             packageId
+// 	ValidTill      validTill
+// 	PackagesNumber int64
+// 	Data           packageData
+// }

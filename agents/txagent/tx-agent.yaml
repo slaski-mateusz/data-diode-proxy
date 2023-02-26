@@ -1,12 +1,12 @@
 files:
   workdir: "../../workdirs/tx"
   fpattern: "sim[0-9]{8}\\.dat"
-  process_after_sec: 10
+  process_after_sec: 2
 cycle:
-  milisec: 100
+  milisec: 1000
 ttl:
-  seconds: 0
-  minutes: 10
+  seconds: 3
+  minutes: 0
   hours: 0
 packet_size:
   bytes: 64

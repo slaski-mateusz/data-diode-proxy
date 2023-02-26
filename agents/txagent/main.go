@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -20,7 +21,7 @@ var (
 	configuration configDef
 	pkgTtl        int64
 	cycleDuration time.Duration
-	buffer        bufferDef
+	procDelay     time.Duration
 )
 
 // Functions
@@ -71,10 +72,11 @@ func main() {
 	configuration.Load(executableName() + ".yaml")
 	createDoneDirectory()
 	pkgTtl = configuration.Ttl.Seconds + 60*configuration.Ttl.Minutes + 3600*configuration.Ttl.Hours
-	cycleDuration = time.Duration(
-		configuration.Cycle.MiliSec * int64(time.Second),
-	)
-	buffer.content = make(packagesByValidTill)
+	cycleDuration = time.Duration(configuration.Cycle.MiliSec) * time.Millisecond
+
+	procDelay = time.Duration(configuration.Files.ProcessAfterSec) * time.Second
+	fmt.Printf("%+v, %+v\n", cycleDuration, procDelay)
+
 	// TODO: Load buffer from file
 	go checkForNewFilesToTransmit()
 	go serveStatus()
