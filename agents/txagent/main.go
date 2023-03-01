@@ -17,7 +17,6 @@ import (
 // few global variables
 
 var (
-	doneDir       = "done"
 	configuration configDef
 	pkgTtl        int64
 	cycleDuration time.Duration
@@ -26,7 +25,7 @@ var (
 
 // Functions
 
-func createDoneDirectory() {
+func createDoneDirectory(doneDir string) {
 	doneDirPath := path.Join(configuration.Files.WorkDir, doneDir)
 	if _, errSt := os.Stat(doneDirPath); errors.Is(errSt, os.ErrNotExist) {
 		errMk := os.Mkdir(doneDirPath, os.ModePerm)
@@ -70,7 +69,7 @@ func main() {
 		syscall.SIGINT,
 	)
 	configuration.Load(executableName() + ".yaml")
-	createDoneDirectory()
+	createDoneDirectory(configuration.Files.DoneSubDir)
 	pkgTtl = configuration.Ttl.Seconds + 60*configuration.Ttl.Minutes + 3600*configuration.Ttl.Hours
 	cycleDuration = time.Duration(configuration.Cycle.MiliSec) * time.Millisecond
 

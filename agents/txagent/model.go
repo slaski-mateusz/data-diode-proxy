@@ -4,6 +4,7 @@ package main
 
 type filesDef struct {
 	WorkDir         string `yaml:"workdir"`
+	DoneSubDir      string `yaml:"donesubdir"`
 	Pattern         string `yaml:"fpattern"`
 	ProcessAfterSec int64  `yaml:"process_after_sec"`
 }

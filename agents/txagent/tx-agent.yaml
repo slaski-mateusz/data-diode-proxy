@@ -1,5 +1,6 @@
 files:
   workdir: "../../workdirs/tx"
+  donesubdir: "done"
   fpattern: "sim[0-9]{8}\\.dat"
   process_after_sec: 2
 cycle:
