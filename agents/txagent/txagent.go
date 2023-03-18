@@ -46,7 +46,7 @@ func checkForNewFilesToTransmit() {
 			)
 			doneFilePath := filepath.Join(
 				configuration.Files.WorkDir,
-				doneDir,
+				configuration.Files.DoneSubDir,
 				f.Name(),
 			)
 			processFile(f.Name(), filePath, doneFilePath)
