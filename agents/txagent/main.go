@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net"
 	"os"
 	"os/signal"
 	"path"
@@ -21,6 +22,8 @@ var (
 	pkgTtl        int64
 	cycleDuration time.Duration
 	procDelay     time.Duration
+	connUDP       *net.UDPConn
+	addrDestUDP   *net.UDPAddr
 )
 
 // Functions
@@ -76,10 +79,18 @@ func main() {
 	procDelay = time.Duration(configuration.Files.ProcessAfterSec) * time.Second
 	fmt.Printf("%+v, %+v\n", cycleDuration, procDelay)
 
-	// TODO: Load buffer from file
+	addrDestUDP = &net.UDPAddr{
+		IP:   net.IP{127, 0, 0, 1},
+		Port: 2345,
+	}
+	addrLocUDP := &net.UDPAddr{Port: 1234}
+	var errCon error
+	connUDP, errCon = net.ListenUDP("udp", addrLocUDP)
+	if errCon != nil {
+		log.Fatal("UDP connection error:", errCon)
+	}
 	go checkForNewFilesToTransmit()
 	go serveStatus()
 	sig := <-cancelChan
 	log.Printf("Caught signal %v", sig)
-	// TODO: Save buffer to file
 }
