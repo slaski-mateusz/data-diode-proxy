@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+export DATADIODE_IN_IP=127.0.0.1
+export DATADIODE_IN_PORT=8001
+export DATADIODE_OUT_IP=127.0.0.1
+export DATADIODE_OUT_PORT=8002

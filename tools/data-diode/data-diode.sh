@@ -1,2 +1,2 @@
 #!/usr/bin/bash
-nc -u 127.0.0.1 2345
+nc -u $DATADIODE_IN_IP $DATADIODE_IN_PORT
