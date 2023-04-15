@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"path"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -72,6 +73,7 @@ func main() {
 		syscall.SIGINT,
 	)
 	configuration.Load(executableName() + ".yaml")
+	fmt.Printf("%+v\n", configuration)
 	createDoneDirectory(configuration.Files.DoneSubDir)
 	pkgTtl = configuration.Ttl.Seconds + 60*configuration.Ttl.Minutes + 3600*configuration.Ttl.Hours
 	cycleDuration = time.Duration(configuration.Cycle.MiliSec) * time.Millisecond
@@ -79,11 +81,65 @@ func main() {
 	procDelay = time.Duration(configuration.Files.ProcessAfterSec) * time.Second
 	fmt.Printf("%+v, %+v\n", cycleDuration, procDelay)
 
-	addrDestUDP = &net.UDPAddr{
-		IP:   net.IP{127, 0, 0, 1},
-		Port: 2345,
+	diodeIp := net.ParseIP(configuration.Network.DiodeIp)
+	if diodeIp == nil {
+		// Assuming that given string is env variable
+		diodeIpEnv := os.Getenv(
+			configuration.Network.DiodeIp,
+		)
+		if diodeIpEnv == "" {
+			log.Fatal(
+				fmt.Sprintf(
+					"Configuration contains diode IP as '%s' value. Such environment variable is not found or not set.",
+					configuration.Network.DiodeIp,
+				),
+			)
+		}
+		diodeIp = net.ParseIP(diodeIpEnv)
+		if diodeIp == nil {
+			log.Fatal(
+				fmt.Sprintf(
+					"Configuration contains diode IP as '%s' value assummed to be environment variable, but value '%s' of this variable can not to be parsed to IP address",
+					configuration.Network.DiodeIp,
+					diodeIpEnv,
+				),
+			)
+		}
 	}
-	addrLocUDP := &net.UDPAddr{Port: 1234}
+
+	diodePort, portErr := strconv.Atoi(configuration.Network.DiodePort)
+	if portErr != nil {
+		// Assuming that given string is env variable
+		diodePortEnv := os.Getenv(
+			configuration.Network.DiodePort,
+		)
+		if diodePortEnv == "" {
+			log.Fatal(
+				fmt.Sprintf(
+					"Configuration contains diode port as '%s' value. Such environment variable is not found or not set.",
+					configuration.Network.DiodePort,
+				),
+			)
+		}
+		diodePort, portErr = strconv.Atoi(diodePortEnv)
+		if portErr != nil {
+			log.Fatal(
+				fmt.Sprintf(
+					"Configuration contains diode port as '%s' value assummed to be environment variable, but value '%s' of this variable can not to be parsed to integer port number",
+					configuration.Network.DiodePort,
+					diodePortEnv,
+				),
+			)
+		}
+	}
+
+	addrDestUDP = &net.UDPAddr{
+		IP:   diodeIp,
+		Port: diodePort,
+	}
+
+	addrLocUDP := &net.UDPAddr{Port: int(configuration.Network.LocalPort)}
+
 	var errCon error
 	connUDP, errCon = net.ListenUDP("udp", addrLocUDP)
 	if errCon != nil {

@@ -23,11 +23,18 @@ type packetSizeDef struct {
 	Bytes int `yaml:"bytes"`
 }
 
+type networkDef struct {
+	LocalPort int64  `yaml:"local_port"`
+	DiodeIp   string `yaml:"diode_ip"`
+	DiodePort string `yaml:"diode_port"`
+}
+
 type configDef struct {
 	Files      filesDef      `yaml:"files"`
 	Cycle      cycleDef      `yaml:"cycle"`
 	Ttl        ttlDef        `yaml:"ttl"`
 	PacketSize packetSizeDef `yaml:"packet_size"`
+	Network    networkDef    `yaml:"network"`
 }
 
 // Buffer types

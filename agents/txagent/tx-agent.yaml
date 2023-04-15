@@ -11,3 +11,7 @@ ttl:
   hours: 0
 packet_size:
   bytes: 64
+network:
+  local_port: 1234
+  diode_ip: "DATADIODE_IN_IP"
+  diode_port: "DATADIODE_IN_PORT"
