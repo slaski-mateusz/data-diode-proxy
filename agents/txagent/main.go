@@ -83,7 +83,7 @@ func main() {
 
 	diodeIp := net.ParseIP(configuration.Network.DiodeIp)
 	if diodeIp == nil {
-		// Assuming that given string is env variable
+		// IP value from config can not be parsed as IP. Assuming that given string is env variable
 		diodeIpEnv := os.Getenv(
 			configuration.Network.DiodeIp,
 		)
@@ -109,7 +109,7 @@ func main() {
 
 	diodePort, portErr := strconv.Atoi(configuration.Network.DiodePort)
 	if portErr != nil {
-		// Assuming that given string is env variable
+		// Port value from config is not integer. Assuming that given string is env variable
 		diodePortEnv := os.Getenv(
 			configuration.Network.DiodePort,
 		)

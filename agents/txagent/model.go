@@ -20,7 +20,7 @@ type cycleDef struct {
 }
 
 type packetSizeDef struct {
-	Bytes int `yaml:"bytes"`
+	Bytes int64 `yaml:"bytes"`
 }
 
 type networkDef struct {

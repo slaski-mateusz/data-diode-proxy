@@ -11,6 +11,12 @@ import (
 	"time"
 )
 
+func dataBytesInPacket(packetSize int64) int64 {
+	// returns amount o bytes that fit in package.
+	// Package size - json overhead
+	return 0
+}
+
 func checkForNewFilesToTransmit() {
 	for {
 		files, errRd := ioutil.ReadDir(configuration.Files.WorkDir)
@@ -114,18 +120,13 @@ func sendFileData(dtt *dataToTransmit) {
 		}
 
 		for _, pck := range dtt.Packages {
-			// sending data simulation
-			// fmt.Printf("File %v Package %+v data: %+v and string content %v\n", dtt.Tfn, id, pck, string(pck))
+			// Sending data - thanks to to Jakob Borg advice for klaymen
+			// https://forum.golangbridge.org/t/sending-out-udp-packets-fast-without-context-connection/7672/9
 			_, errSend := connUDP.WriteTo(pck, addrDestUDP)
 			if errSend != nil {
 				fmt.Println("error sendig udp message:", errSend)
 			}
 		}
-
-		// Sending data
-		// https://www.golinuxcloud.com/golang-udp-server-client/ ??
-		// https://holwech.github.io/blog/Creating-a-simple-UDP-module/ ??
-		// https://forum.golangbridge.org/t/sending-out-udp-packets-fast-without-context-connection/7672/9
 
 		time.Sleep(cycleDuration)
 	}
