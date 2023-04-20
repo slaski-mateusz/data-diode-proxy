@@ -11,10 +11,19 @@ import (
 	"time"
 )
 
+const (
+	packetNumberBytes = 8
+	packetAmountBytes = 8
+	fileNamelenBytes  = 255
+)
+
 func dataBytesInPacket(packetSize int64) int64 {
 	// returns amount o bytes that fit in package.
-	// Package size - json overhead
-	return 0
+	// Send package size minus tranmission overhead:
+	// - packet number int64 -> 8 bytes
+	// - total packets number int 64 -> 8 bytes
+	// - file name 255 bytes
+	return packetSize - packetNumberBytes - packetAmountBytes - fileNamelenBytes
 }
 
 func checkForNewFilesToTransmit() {
@@ -72,9 +81,11 @@ func processFile(fileName string, filePath string, doneFilePath string) {
 	dtt.Packages = make(packagesById)
 	dtt.Vt = validTill(time.Now().Unix() + int64(pkgTtl))
 	dtt.Tfn = transmittedFileName(fileName)
-	bytesRead := make([]byte, configuration.PacketSize.Bytes)
+	bytesRead := make(
+		[]byte,
+		dataBytesInPacket(configuration.PacketSize.Bytes),
+	)
 	var pckId packageId = 0
-	var fileContent []byte
 	fmt.Println("Processing file:", fileName)
 	for {
 		// amountRead, errRead := fileToRead.Read(bytesRead)
@@ -82,12 +93,9 @@ func processFile(fileName string, filePath string, doneFilePath string) {
 		// fmt.Println(amountRead, "bytes read")
 		fmt.Println(bytesRead)
 		dtt.Packages[pckId] = bytesRead
-		fileContent = append(fileContent, bytesRead...)
 		pckId++
 		if errRead == io.EOF {
 			dtt.PackagesNumber = pckId
-			// fmt.Println("File content:")
-			// fmt.Println(string(fileContent))
 			errRen := os.Rename(filePath, doneFilePath)
 			if errRen != nil {
 				log.Fatalf(
