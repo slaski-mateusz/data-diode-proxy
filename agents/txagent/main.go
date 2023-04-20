@@ -21,6 +21,7 @@ import (
 var (
 	configuration configDef
 	pkgTtl        int64
+	dataInPacket  int64
 	cycleDuration time.Duration
 	procDelay     time.Duration
 	connUDP       *net.UDPConn
@@ -73,6 +74,7 @@ func main() {
 		syscall.SIGINT,
 	)
 	configuration.Load(executableName() + ".yaml")
+	dataInPacket = dataBytesInPacket(configuration.PacketSize.Bytes)
 	fmt.Printf("%+v\n", configuration)
 	createDoneDirectory(configuration.Files.DoneSubDir)
 	pkgTtl = configuration.Ttl.Seconds + 60*configuration.Ttl.Minutes + 3600*configuration.Ttl.Hours

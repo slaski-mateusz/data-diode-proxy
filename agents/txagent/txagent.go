@@ -23,7 +23,16 @@ func dataBytesInPacket(packetSize int64) int64 {
 	// - packet number int64 -> 8 bytes
 	// - total packets number int 64 -> 8 bytes
 	// - file name 255 bytes
-	return packetSize - packetNumberBytes - packetAmountBytes - fileNamelenBytes
+	dataSize := packetSize - packetNumberBytes - packetAmountBytes - fileNamelenBytes
+	if dataSize <= 0 {
+		log.Fatal(
+			fmt.Sprintf(
+				"Calculated amout of data to put in packet is %v. Please correct configuration with packet_size.bytes > 271.",
+				dataSize,
+			),
+		)
+	}
+	return dataSize
 }
 
 func checkForNewFilesToTransmit() {
@@ -83,7 +92,7 @@ func processFile(fileName string, filePath string, doneFilePath string) {
 	dtt.Tfn = transmittedFileName(fileName)
 	bytesRead := make(
 		[]byte,
-		dataBytesInPacket(configuration.PacketSize.Bytes),
+		dataInPacket,
 	)
 	var pckId packageId = 0
 	fmt.Println("Processing file:", fileName)

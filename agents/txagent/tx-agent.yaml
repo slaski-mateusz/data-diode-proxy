@@ -10,7 +10,13 @@ ttl:
   minutes: 0
   hours: 0
 packet_size:
-  bytes: 64
+# packet size cant be less than 8+8+255+1 = 272
+# - package id is int64
+# - number of packages int64
+# - file name
+# - minimum 1 byte of data
+# but with value we sent only one byte of data and has inefficient communiaction
+  bytes: 1295
 network:
   local_port: 1234
   diode_ip: "DATADIODE_IN_IP"
