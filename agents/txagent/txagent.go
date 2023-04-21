@@ -17,6 +17,7 @@ const (
 	packetAmountBytes    = 8
 	packetValidTillBytes = 8
 	fileNamelenBytes     = 255
+	packOverheadBytes    = packetNumberBytes + packetAmountBytes + packetValidTillBytes + fileNamelenBytes
 )
 
 func dataBytesInPacket(packetSize int64) int64 {
@@ -26,7 +27,7 @@ func dataBytesInPacket(packetSize int64) int64 {
 	// - total packets number int64 -> 8 bytes
 	// - valid till int64 -> 8 bytes
 	// - file name 255 bytes
-	dataSize := packetSize - packetNumberBytes - packetAmountBytes - packetValidTillBytes - fileNamelenBytes
+	dataSize := packetSize - packOverheadBytes
 	if dataSize <= 0 {
 		log.Fatal(
 			fmt.Sprintf(
@@ -151,7 +152,7 @@ func sendFileData(dtt *dataToTransmit) {
 			return
 		}
 
-		for _, pck := range dtt.Packages {
+		for pci, pckData := range dtt.Packages {
 			// Sending data - thanks to to Jakob Borg advice for klaymen
 			// https://forum.golangbridge.org/t/sending-out-udp-packets-fast-without-context-connection/7672/9
 			//TODO Pack in byte array:
@@ -159,6 +160,33 @@ func sendFileData(dtt *dataToTransmit) {
 			//TODO - number of packages
 			//TODO - file name
 			//TODO - data
+			pck := make([]byte, packOverheadBytes+dataInPacket)
+			pck = append(
+				pck,
+				[]byte(dtt.Tfn)...,
+			)
+			pck = append(
+				pck,
+				int64ToBytes(
+					int64(dtt.Vt),
+				)...,
+			)
+			pck = append(
+				pck,
+				int64ToBytes(
+					int64(dtt.PackagesNumber),
+				)...,
+			)
+			pck = append(
+				pck,
+				int64ToBytes(
+					int64(pci),
+				)...,
+			)
+			pck = append(
+				pck,
+				pckData...,
+			)
 			_, errSend := connUDP.WriteTo(pck, addrDestUDP)
 			if errSend != nil {
 				fmt.Println("error sendig udp message:", errSend)
