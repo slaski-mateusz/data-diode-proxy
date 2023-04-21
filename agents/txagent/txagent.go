@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/binary"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -33,6 +34,16 @@ func dataBytesInPacket(packetSize int64) int64 {
 		)
 	}
 	return dataSize
+}
+
+func int64ToBytes(value int64) []byte {
+	bt := make([]byte, 8)
+	binary.LittleEndian.PutUint64(bt, uint64(value))
+	return bt
+}
+
+func bytesToInt64(bytes []byte) int64 {
+	return int64(binary.LittleEndian.Uint64(bytes))
 }
 
 func checkForNewFilesToTransmit() {
@@ -73,6 +84,8 @@ func checkForNewFilesToTransmit() {
 				configuration.Files.DoneSubDir,
 				f.Name(),
 			)
+			//TODO: It is potential risk that if file would be big and cycle short than file would be get to proccess again
+			//TODO: Solution would be to keep in memory list of files being processed
 			processFile(f.Name(), filePath, doneFilePath)
 		}
 		time.Sleep(cycleDuration)
@@ -139,6 +152,11 @@ func sendFileData(dtt *dataToTransmit) {
 		for _, pck := range dtt.Packages {
 			// Sending data - thanks to to Jakob Borg advice for klaymen
 			// https://forum.golangbridge.org/t/sending-out-udp-packets-fast-without-context-connection/7672/9
+			//TODO Pack in byte array:
+			//TODO - package number
+			//TODO - number of packages
+			//TODO - file name
+			//TODO - data
 			_, errSend := connUDP.WriteTo(pck, addrDestUDP)
 			if errSend != nil {
 				fmt.Println("error sendig udp message:", errSend)
