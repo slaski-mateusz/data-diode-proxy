@@ -13,22 +13,24 @@ import (
 )
 
 const (
-	packetNumberBytes = 8
-	packetAmountBytes = 8
-	fileNamelenBytes  = 255
+	packetNumberBytes    = 8
+	packetAmountBytes    = 8
+	packetValidTillBytes = 8
+	fileNamelenBytes     = 255
 )
 
 func dataBytesInPacket(packetSize int64) int64 {
 	// returns amount o bytes that fit in package.
 	// Send package size minus tranmission overhead:
 	// - packet number int64 -> 8 bytes
-	// - total packets number int 64 -> 8 bytes
+	// - total packets number int64 -> 8 bytes
+	// - valid till int64 -> 8 bytes
 	// - file name 255 bytes
-	dataSize := packetSize - packetNumberBytes - packetAmountBytes - fileNamelenBytes
+	dataSize := packetSize - packetNumberBytes - packetAmountBytes - packetValidTillBytes - fileNamelenBytes
 	if dataSize <= 0 {
 		log.Fatal(
 			fmt.Sprintf(
-				"Calculated amout of data to put in packet is %v. Please correct configuration with packet_size.bytes > 271.",
+				"Calculated amout of data to put in packet is %v. Please correct configuration with packet_size.bytes > 279.",
 				dataSize,
 			),
 		)
