@@ -139,6 +139,7 @@ def main():
         drop_packets = False
         if datadiode_drop_pct > 0:
             dpc = 100 * random()
+            print(dpc, datadiode_drop_pct)
             if dpc < datadiode_drop_pct:
                 drop_packets = True
         if not drop_packets:            

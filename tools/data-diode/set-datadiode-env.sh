@@ -9,8 +9,8 @@ export DATADIODE_OUT_IP=127.0.0.1
 export DATADIODE_OUT_PORT=8002
 
 # Destination to send
-export DATADIODE_OUT_IP=127.0.0.1
-export DATADIODE_OUT_PORT=8003
+export DATADIODE_DEST_IP=127.0.0.1
+export DATADIODE_DEST_PORT=8003
 
 # Simulating network bad quality. By dropping some percentage of packets
 export DATADIODE_DROP_PCT=0
