@@ -1,12 +1,15 @@
 from os import environ
 from ipaddress import ip_address
 from socket import socket, AF_INET, SOCK_DGRAM
+from random import random
 
 env_vars ={
     "DATADIODE_IN_IP": "IP",
     "DATADIODE_IN_PORT": "PORT",
     "DATADIODE_OUT_IP": "IP",
     "DATADIODE_OUT_PORT": "PORT",
+    "DATADIODE_DEST_IP": "IP",
+    "DATADIODE_DEST_PORT": "PORT",
     "DATADIODE_DROP_PCT": "int",
     "DATADIODE_STOP_CYCLE": "int",
     "DATADIODE_STOP_RND": "int",
@@ -73,27 +76,38 @@ def main():
         env_vars_issues
     )
 
-    datadiode_out_port = get_env_value(
+    datadiode_dest_ip = get_env_value(
+        "DATADIODE_DEST_IP",
+        env_vars["DATADIODE_DEST_IP"],
+        env_vars_issues
+    )
+    datadiode_dest_port = get_env_value(
+        "DATADIODE_DEST_PORT",
+        env_vars["DATADIODE_DEST_PORT"],
+        env_vars_issues
+    )
+
+    datadiode_drop_pct = get_env_value(
         "DATADIODE_DROP_PCT",
         env_vars["DATADIODE_DROP_PCT"],
         env_vars_issues
     )
-    datadiode_out_port = get_env_value(
+    datadiode_stop_cycle = get_env_value(
         "DATADIODE_STOP_CYCLE",
         env_vars["DATADIODE_STOP_CYCLE"],
         env_vars_issues
     )
-    datadiode_out_port = get_env_value(
+    datadiode_stop_rnd = get_env_value(
         "DATADIODE_STOP_RND",
         env_vars["DATADIODE_STOP_RND"],
         env_vars_issues
     )
-    datadiode_out_port = get_env_value(
+    datadiode_stop_min = get_env_value(
         "DATADIODE_STOP_MIN",
         env_vars["DATADIODE_STOP_MIN"],
         env_vars_issues
     )
-    datadiode_out_port = get_env_value(
+    datadiode_stop_max = get_env_value(
         "DATADIODE_STOP_MAX",
         env_vars["DATADIODE_STOP_MAX"],
         env_vars_issues
@@ -122,7 +136,15 @@ def main():
     while True:
         data, addr = sk_in.recvfrom(1024)
         print("from {} received data {}".format(addr, data))
-        sk_out.send(data)
+        drop_packets = False
+        if datadiode_drop_pct > 0:
+            dpc = 100 * random()
+            if dpc < datadiode_drop_pct:
+                drop_packets = True
+        if not drop_packets:            
+            sk_out.sendto(data, ("127.0.0.1", 9000))
+        else:
+            print("dropping packets")
 
 if __name__ == "__main__":
     main()
