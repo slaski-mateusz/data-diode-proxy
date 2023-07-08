@@ -86,7 +86,7 @@ func checkForNewFilesToTransmit() {
 				configuration.Files.DoneSubDir,
 				f.Name(),
 			)
-			//TODO: It is potential risk that if file would be big and cycle short than file would be get to proccess again
+			//TODO: If processFile would be executed as gorutine than it is potential risk that if file would be big and cycle short than file would be get to proccess again
 			//TODO: Solution would be to keep in memory list of files being processed
 			processFile(f.Name(), filePath, doneFilePath)
 		}

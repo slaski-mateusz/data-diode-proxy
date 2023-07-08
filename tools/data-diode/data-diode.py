@@ -2,79 +2,127 @@ from os import environ
 from ipaddress import ip_address
 from socket import socket, AF_INET, SOCK_DGRAM
 
+env_vars ={
+    "DATADIODE_IN_IP": "IP",
+    "DATADIODE_IN_PORT": "PORT",
+    "DATADIODE_OUT_IP": "IP",
+    "DATADIODE_OUT_PORT": "PORT",
+    "DATADIODE_DROP_PCT": "int",
+    "DATADIODE_STOP_CYCLE": "int",
+    "DATADIODE_STOP_RND": "int",
+    "DATADIODE_STOP_MIN": "int",
+    "DATADIODE_STOP_MAX": "int"
+}
 
 env_vars_issues = []
 
-
-try:
-    datadiode_in_ip =environ['DATADIODE_IN_IP']
-    if datadiode_in_ip == "":
-        env_vars_issues.append("DATADIODE_IN_IP is empty")
-    else:
-        try:
-            ip_address(datadiode_in_ip)
-        except ValueError:
-            env_vars_issues.append(f"Environment variable DATADIODE_IN_IP value {datadiode_in_ip} is not proper ip address")
-except KeyError:
-    env_vars_issues.append('Environment variable DATADIODE_IN_IP is not defined')
-
-try:
-    datadiode_in_port =environ['DATADIODE_IN_PORT']
-    if datadiode_in_port == "":
-        env_vars_issues.append("DATADIODE_IN_PORT is empty")
-    else:
-        try:
-            datadiode_in_port = int(datadiode_in_port)
-        except ValueError:
-            env_vars_issues.append(f"DATADIODE_IN_PORT value {datadiode_in_port} is not integer number")
-except KeyError:
-    env_vars_issues.append('Environment variable DATADIODE_IN_PORT is not defined')
-
-
-try:
-    datadiode_out_ip =environ['DATADIODE_OUT_IP']
-    if datadiode_out_ip == "":
-        env_vars_issues.append("DATADIODE_OUT_IP is empty")
-    else:
-        try:
-            ip_address(datadiode_out_ip)
-        except ValueError:
-            env_vars_issues.append(f"Environment variable DATADIODE_OUT_IP value {datadiode_out_ip} is not proper ip address")
-except KeyError:
-    env_vars_issues.append('Environment variable DATADIODE_OUT_IP is not defined')
-
-try:
-    datadiode_out_port =environ['DATADIODE_OUT_PORT']
-    if datadiode_out_port == "":
-        env_vars_issues.append("DATADIODE_OUT_PORT is empty")
-    else:
-        try:
-            datadiode_out_port = int(datadiode_out_port)
-        except ValueError:
-            env_vars_issues.append(f"DATADIODE_OUT_PORT value {datadiode_out_port} is not integer number")
-except KeyError:
-    env_vars_issues.append('Environment variable DATADIODE_OUT_PORT is not defined')
-
-
-if env_vars_issues:
-    print("Environment variables not defined properly!")
-    print("\n".join(env_vars_issues))
-    print("Exiting!")
-    exit(1)
-
-print(f"Listening for UDP packets on {datadiode_in_ip}:{datadiode_in_port}")
-# print(f"Forwarding UDP packets to {datadiode_out_ip}:{datadiode_out_port}")
+def get_env_value(env_var_name, var_content, env_vars_issues):
+    try:
+        env_var_value =environ[env_var_name]
+        if env_var_value == "":
+            env_vars_issues.append(f"Environment variable {env_var_name} is empty")
+        else:
+            if var_content == "IP":
+                try:
+                    ip_address(env_var_value)
+                    return env_var_value
+                except ValueError:
+                    env_vars_issues.append(f"Environment variable {env_var_name} value {env_var_value} is not proper ip address")
+            elif var_content == "PORT":
+                try:
+                    port_num = int(env_var_value)
+                    if port_num < 1000 or port_num > 65535:
+                        raise TypeError
+                    return port_num
+                except ValueError:
+                    env_vars_issues.append(f"Environment variable {env_var_name} value {env_var_value} is not proper port number")
+                except TypeError:
+                    env_vars_issues.append(f"Environment variable {env_var_name} value {env_var_value} is not proper port range 1000~65535")
+            elif var_content == "int":
+                try:
+                    var_int_value = int(env_var_value)
+                    return var_int_value
+                except ValueError:
+                    env_vars_issues.append(f"Environment variable {env_var_name} value {env_var_value} is not integer")
+            else:
+                env_vars_issues.append(f"Checking environment variables types: IP,PORT,int not {var_content}")
+    except KeyError:
+        env_vars_issues.append(f"Environment variable {env_var_name} is not defined")
 
 
 def main():
-    sk = socket(AF_INET, SOCK_DGRAM)
-    sk.bind(
+
+    datadiode_in_ip = get_env_value(
+        "DATADIODE_IN_IP",
+        env_vars["DATADIODE_IN_IP"],
+        env_vars_issues
+    )
+    datadiode_in_port = get_env_value(
+        "DATADIODE_IN_PORT",
+        env_vars["DATADIODE_IN_PORT"],
+        env_vars_issues
+    )
+    datadiode_out_ip = get_env_value(
+        "DATADIODE_OUT_IP",
+        env_vars["DATADIODE_OUT_IP"],
+        env_vars_issues
+    )
+    datadiode_out_port = get_env_value(
+        "DATADIODE_OUT_PORT",
+        env_vars["DATADIODE_OUT_PORT"],
+        env_vars_issues
+    )
+
+    datadiode_out_port = get_env_value(
+        "DATADIODE_DROP_PCT",
+        env_vars["DATADIODE_DROP_PCT"],
+        env_vars_issues
+    )
+    datadiode_out_port = get_env_value(
+        "DATADIODE_STOP_CYCLE",
+        env_vars["DATADIODE_STOP_CYCLE"],
+        env_vars_issues
+    )
+    datadiode_out_port = get_env_value(
+        "DATADIODE_STOP_RND",
+        env_vars["DATADIODE_STOP_RND"],
+        env_vars_issues
+    )
+    datadiode_out_port = get_env_value(
+        "DATADIODE_STOP_MIN",
+        env_vars["DATADIODE_STOP_MIN"],
+        env_vars_issues
+    )
+    datadiode_out_port = get_env_value(
+        "DATADIODE_STOP_MAX",
+        env_vars["DATADIODE_STOP_MAX"],
+        env_vars_issues
+    )
+    
+
+    if env_vars_issues:
+        print("Environment variables not defined properly!")
+        print("\n".join(env_vars_issues))
+        print("Exiting!")
+        exit(1)
+
+    print(f"Listening for UDP packets on {datadiode_in_ip}:{datadiode_in_port}")
+    # print(f"Forwarding UDP packets to {datadiode_out_ip}:{datadiode_out_port}")
+
+    sk_in = socket(AF_INET, SOCK_DGRAM)
+    sk_in.bind(
         (datadiode_in_ip, datadiode_in_port)
     )
+
+    sk_out = socket(AF_INET, SOCK_DGRAM)
+    sk_out.bind(
+        (datadiode_out_ip, datadiode_out_port)
+    )
+
     while True:
-        data, addr = sk.recvfrom(1024)
+        data, addr = sk_in.recvfrom(1024)
         print("from {} received data {}".format(addr, data))
-        
+        sk_out.send(data)
 
 if __name__ == "__main__":
     main()

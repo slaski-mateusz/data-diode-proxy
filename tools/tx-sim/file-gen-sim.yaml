@@ -8,5 +8,5 @@ cycle:
   seconds: 1
   random-sec-offset: 1
 errors:
-  skip-file-chance: 50
+  skip-file-chance: 0
   skip-line-chance: 0

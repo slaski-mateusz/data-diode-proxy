@@ -55,13 +55,3 @@ type dataToTransmit struct {
 	PackagesNumber packageId
 	Packages       packagesById
 }
-
-//transmit types
-
-// type packageToTransmit struct {
-// 	FileName       transmittedFileName
-// 	Id             packageId
-// 	ValidTill      validTill
-// 	PackagesNumber int64
-// 	Data           packageData
-// }
